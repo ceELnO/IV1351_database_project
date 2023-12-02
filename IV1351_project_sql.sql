@@ -57,8 +57,8 @@ CREATE TABLE Instrument_type(
 
 CREATE TABLE Instructor_instrument(
 	instructor_id_id INT FOREIGN KEY REFERENCES Instructor(instrctor_id),
-	instrument_type_id_id INT FOREGIN KEY REFERENCES Instrument_type(instrument_type_id_id),
-	difficulty_level_id_id INT FOREGIN KEY REFERENCES Difficulty_level(difficulty_level_id)
+	instrument_type_id_id INT FOREIGN KEY REFERENCES Instrument_type(instrument_type_id_id),
+	difficulty_level_id_id INT FOREIGN KEY REFERENCES Difficulty_level(difficulty_level_id)
 )
 
 CREATE TABLE Rent_instrument_assortment(
@@ -80,10 +80,10 @@ CREATE TABLE Rented_instrument(
 
 CREATE TABLE Individual_lesson(
 	individual_lesson_id INT GENERATE ALWAYS AS IDENTITY PRIMARY KEY NOT NULL,
-	instructor_id_id INT FOREGIN KEY REFERENCES Instrctor(instructor_id),
-	instrument_type_id_id INT FOREGIN KEY REFERENCES Instrument_type(instrument_type_id),
-	difficulty_level_id_id INT FOREGIN KEY REFERENCES Difficulty_level(difficulty_level_id),
-	student_id_id INT FOREGIN KEY REFERENCES Student(student_id),
+	instructor_id_id INT FOREIGN KEY REFERENCES Instrctor(instructor_id),
+	instrument_type_id_id INT FOREIGN KEY REFERENCES Instrument_type(instrument_type_id),
+	difficulty_level_id_id INT FOREIGN KEY REFERENCES Difficulty_level(difficulty_level_id),
+	student_id_id INT FOREIGN KEY REFERENCES Student(student_id),
 	individual_lesson_start_time TIMESTAMP,
 	individual_lesson_end_time TIMESTAMP,
 	individual_lesson_student_price INT,
@@ -94,9 +94,9 @@ CREATE TABLE Individual_lesson(
 
 CREATE TABLE group_lesson(
 	group_lesson_id INT GENERATE ALWAYS AS IDENTITY PRIMARY KEY NOT NULL,
-	instructor_id_id INT FOREGIN KEY REFERENCES Instrctor(instructor_id),
-	instrument_type_id_id INT FOREGIN KEY REFERENCES Instrument_type(instrument_type_id),
-	difficulty_level_id_id INT FOREGIN KEY REFERENCES Difficulty_level(difficulty_level_id),
+	instructor_id_id INT FOREIGN KEY REFERENCES Instrctor(instructor_id),
+	instrument_type_id_id INT FOREIGN KEY REFERENCES Instrument_type(instrument_type_id),
+	difficulty_level_id_id INT FOREIGN KEY REFERENCES Difficulty_level(difficulty_level_id),
 	group_lesson_student_price INT,
 	group_lesson_instructor_price INT
 )
@@ -122,8 +122,8 @@ CREATE TABLE Ensemble_type(
 
 CREATE TABLE Ensemble(
 	ensemble_id INT GENERATE ALWAYS AS IDENTITY PRIMARY KEY NOT NULL,
-	instructor_id_id INT FOREGIN KEY REFERENCES Instrctor(instructor_id),
-	instrument_type_id_id INT FOREGIN KEY REFERENCES Instrument_type(instrument_type_id),
+	instructor_id_id INT FOREIGN KEY REFERENCES Instrctor(instructor_id),
+	instrument_type_id_id INT FOREIGN KEY REFERENCES Instrument_type(instrument_type_id),
 	ensemble_type_id_id INT FOREIGN KEY REFERENCES Ensemble_type(ensemble_type_id) NOT NULL,
 	ensemble_start_time TIMESTAMP,
 	ensemble_end_time TIMESTAMP,
@@ -138,9 +138,25 @@ CREATE TABLE Group_lesson_enrollment(
 
 /* ----------------------- standard prices ------------------------ */
 
-/* Contains the following descriptions: sibling_discount, student_individual_beginner, student_individual_intermidiate, student_individual_advanced, student_group_beginner, student_group_intermidiate, student_group_advanced, student_ensemble, instructor_individual_beginner, instructor_individual_intermidiate, instructor_individual_advanced, instructor_group_beginner, instructor_group_intermidiate, instructor_group_advanced, instructor_ensemble */
+/* Contains the following descriptions: 
+    sibling_discount,
+    student_individual_beginner,
+    student_individual_intermidiate,
+    student_individual_advanced,
+    student_group_beginner,
+    student_group_intermidiate,
+    student_group_advanced,
+    student_ensemble,
+    instructor_individual_beginner,
+    instructor_individual_intermidiate,
+    instructor_individual_advanced,
+    instructor_group_beginner,
+    instructor_group_intermidiate,
+    instructor_group_advanced,
+    instructor_ensemble
+*/
 
 CREATE TABLE Standard_price(
 	standard_price INT,
-	standard_price_description
+	standard_price_description VARCHAR(50)
 )
