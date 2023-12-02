@@ -17,7 +17,7 @@ CREATE TEMPORARY TABLE Student(
 	student_address VARCHAR(50),
 	student_mail_address VARCHAR(50),
 	student_phone_number VARCHAR(50),
-	studetn_siblings VARCHAR(50)
+	student_sibling BOOLEAN
 );
 CREATE TEMPORARY TABLE Instructor(
 	instructor_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY NOT NULL,
@@ -174,7 +174,7 @@ CREATE TEMPORARY TABLE Ensemble(
         REFERENCES Ensemble_type(ensemble_type_id)
 );
 
-CREATE TEMPORARY TABLE Group_lesson_enrollment(
+CREATE TEMPORARY TABLE Ensemble_enrollment(
 	ensemble_lesson_id_id INT NOT NULL,
 	student_id_id INT NOT NULL,
 
@@ -186,25 +186,21 @@ CREATE TEMPORARY TABLE Group_lesson_enrollment(
 
 /* ----------------------- standard prices ------------------------ */
 
-/* Contains the following descriptions: 
-    sibling_discount,
-    student_individual_beginner,
-    student_individual_intermidiate,
-    student_individual_advanced,
-    student_group_beginner,
-    student_group_intermidiate,
-    student_group_advanced,
-    student_ensemble,
-    instructor_individual_beginner,
-    instructor_individual_intermidiate,
-    instructor_individual_advanced,
-    instructor_group_beginner,
-    instructor_group_intermidiate,
-    instructor_group_advanced,
-    instructor_ensemble
-*/
-
 CREATE TEMPORARY TABLE Standard_price(
-	standard_price INT,
-	standard_price_description VARCHAR(50)
+	standard_price_active BOOLEAN,
+    sibling_discount INT,
+    student_individual_beginner INT,
+    student_individual_intermidiate INT,
+    student_individual_advanced INT,
+    student_group_beginner INT,
+    student_group_intermidiate INT,
+    student_group_advanced INT,
+    student_ensemble INT,
+    instructor_individual_beginner INT,
+    instructor_individual_intermidiate INT,
+    instructor_individual_advanced INT,
+    instructor_group_beginner INT,
+    instructor_group_intermidiate INT,
+    instructor_group_advanced INT,
+    instructor_ensemble INT
 );
