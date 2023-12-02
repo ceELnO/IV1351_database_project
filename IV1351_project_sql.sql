@@ -3,15 +3,15 @@
 
 /* "difficulty_name" contains: {begginer, intermidate, advanced} */
 
-CREATE TABLE Difficulty_level(
-	difficulty_level_id INT GENERATE ALWAYS AS IDENTITY PRIMARY KEY NOT NULL,
+CREATE TEMPORARY TABLE Difficulty_level(
+	difficulty_level_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY NOT NULL,
 	difficulty_name VARCHAR(50)
-)
+);
 
 /* ------------------- People ----------------- */
 
-CREATE TABLE Student(
-	student_id INT GENERATE ALWAYS AS IDENTITY PRIMARY KEY NOT NULL,
+CREATE TEMPORARY TABLE Student(
+	student_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY NOT NULL,
 	student_fname VARCHAR(50),
 	student_lname VARCHAR(50),
 	student_address VARCHAR(50),
@@ -19,122 +19,170 @@ CREATE TABLE Student(
 	student_phone_number VARCHAR(50),
 	studetn_siblings VARCHAR(50)
 );
-CREATE TABLE Instructor(
-	instructor_id INT GENERATE ALWAYS AS IDENTITY PRIMARY KEY NOT NULL,
+CREATE TEMPORARY TABLE Instructor(
+	instructor_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY NOT NULL,
 	instructor_fname VARCHAR(50),
 	instructor_lname VARCHAR(50),
 	instructor_address VARCHAR(50),
 	instructor_mail_address VARCHAR(50),
-	instructor_phone_number VARCHAR(50),
+	instructor_phone_number VARCHAR(50)
 );
 
 /* --- details with people ---*/
 
-CREATE TABLE Guardian_contact_details(
-	student_id_id INT FOREIGN KEY REFERENCES Student(student_id) NOT NULL,
+CREATE TEMPORARY TABLE Guardian_contact_details(
+	student_id_id INT NOT NULL,
 	guardian_fname VARCHAR(50),
 	guardian_lname VARCHAR(50),
 	guardian_mail_address VARCHAR(50),
-	guardian_phone_number VARCHAR(50)
-)
+	guardian_phone_number VARCHAR(50),
+
+	CONSTRAINT guardian_student FOREIGN KEY(student_id_id)
+        REFERENCES Student(student_id)
+);
 
 /* student_sibling_group identifies groups of siblings */
 
-CREATE TABLE Student_sibling(
-	student_id_id INT FOREIGN KEY REFERENCES Student(student_id) NOT NULL UNIQUE,
-	student_sibling_group INT SERIAL
-)
+CREATE TEMPORARY TABLE Student_sibling(
+	student_id_id INT NOT NULL UNIQUE,
+	student_sibling_group SERIAL,
+
+	CONSTRAINT student_sibling_grouping FOREIGN KEY(student_id_id)
+        REFERENCES Student(student_id)
+);
 	
 /* --------------------------- Instrument ---------------------------*/
 
-CREATE TABLE Instrument_type(
-	instrument_type_id INT GENERATE ALWAYS AS IDENTITY NOT NULL,
+CREATE TEMPORARY TABLE Instrument_type(
+	instrument_type_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY NOT NULL,
 	instrument_type_name VARCHAR(50),
 	instrument_type_description VARCHAR(1000)
-)
+);
 
 /* interactions */
 
-CREATE TABLE Instructor_instrument(
-	instructor_id_id INT FOREIGN KEY REFERENCES Instructor(instrctor_id),
-	instrument_type_id_id INT FOREIGN KEY REFERENCES Instrument_type(instrument_type_id_id),
-	difficulty_level_id_id INT FOREIGN KEY REFERENCES Difficulty_level(difficulty_level_id)
-)
+CREATE TEMPORARY TABLE Instructor_instrument(
+	instructor_id_id INT,
+	instrument_type_id_id INT,
+	difficulty_level_id_id INT,
 
-CREATE TABLE Rent_instrument_assortment(
+	CONSTRAINT instructor_instrument FOREIGN KEY(instructor_id_id)
+        REFERENCES Instructor(instructor_id),
+	CONSTRAINT instructor_instrument_type FOREIGN KEY(instrument_type_id_id)
+        REFERENCES Instrument_type(instrument_type_id),
+	CONSTRAINT instructor_instrument_difficulty FOREIGN KEY(difficulty_level_id_id)
+        REFERENCES Difficulty_level(difficulty_level_id)
+);
+
+CREATE TEMPORARY TABLE Rent_instrument_assortment(
 	instrument_type_id_id INT UNIQUE NOT NULL,
 	instrument_type_stored_quantity INT,
 	instrument_type_rent_cost INT
-)
+);
 
-CREATE TABLE Rented_instrument(
-	student_id_id INT FOREIGN KEY REFERENCES Student(student_id) NOT NULL,
-	insrument_type_id_id INT FOREIGN KEY REFERENCES Instrument_type(instrument_type_id) NOT NULL,
+CREATE TEMPORARY TABLE Rented_instrument(
+	student_id_id INT NOT NULL,
+	instrument_type_id_id INT NOT NULL,
 	rented_instrument_since TIMESTAMP NOT NULL,
-	rented_instrument_turned_in TIMESTAMP
-)
+	rented_instrument_turned_in TIMESTAMP,
+
+	CONSTRAINT student_renting_instrument FOREIGN KEY(student_id_id)
+        REFERENCES Student(student_id),
+	CONSTRAINT instructor_instrument_type FOREIGN KEY(instrument_type_id_id)
+        REFERENCES Instrument_type(instrument_type_id)
+);
 
 /* ------------------------ lesson / ensemble ---------------------- */
 
 /* individual lessons */
 
-CREATE TABLE Individual_lesson(
-	individual_lesson_id INT GENERATE ALWAYS AS IDENTITY PRIMARY KEY NOT NULL,
-	instructor_id_id INT FOREIGN KEY REFERENCES Instrctor(instructor_id),
-	instrument_type_id_id INT FOREIGN KEY REFERENCES Instrument_type(instrument_type_id),
-	difficulty_level_id_id INT FOREIGN KEY REFERENCES Difficulty_level(difficulty_level_id),
-	student_id_id INT FOREIGN KEY REFERENCES Student(student_id),
-	individual_lesson_start_time TIMESTAMP,
+CREATE TEMPORARY TABLE Individual_lesson(
+	individual_lesson_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY NOT NULL,
+	instructor_id_id INT,
+	instrument_type_id_id INT,
+	difficulty_level_id_id INT,
+	student_id_id INT,
+	individual_lesson_start_time TIMESTAMP NOT NULL,
 	individual_lesson_end_time TIMESTAMP,
 	individual_lesson_student_price INT,
-	individual_lesson_instructor_price INT
-)
+	individual_lesson_instructor_price INT,
+
+	CONSTRAINT instructor_id_id FOREIGN KEY(instructor_id_id)
+        REFERENCES Instructor(instructor_id),
+	CONSTRAINT instrument_type_id_id FOREIGN KEY(instrument_type_id_id)
+        REFERENCES Instrument_type(instrument_type_id),
+	CONSTRAINT difficulty_level_id_id FOREIGN KEY(difficulty_level_id_id)
+        REFERENCES Difficulty_level(difficulty_level_id),
+	CONSTRAINT student_id_id FOREIGN KEY(student_id_id)
+        REFERENCES Student(student_id)
+);
 
 /* group lessons */
 
-CREATE TABLE group_lesson(
-	group_lesson_id INT GENERATE ALWAYS AS IDENTITY PRIMARY KEY NOT NULL,
-	instructor_id_id INT FOREIGN KEY REFERENCES Instrctor(instructor_id),
-	instrument_type_id_id INT FOREIGN KEY REFERENCES Instrument_type(instrument_type_id),
-	difficulty_level_id_id INT FOREIGN KEY REFERENCES Difficulty_level(difficulty_level_id),
+CREATE TEMPORARY TABLE Group_lesson(
+	group_lesson_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY NOT NULL,
+	instructor_id_id INT,
+	instrument_type_id_id INT,
+	difficulty_level_id_id INT,
+	group_lesson_start_time TIMESTAMP NOT NULL,
+	group_lesson_end_time TIMESTAMP,
 	group_lesson_student_price INT,
-	group_lesson_instructor_price INT
-)
+	group_lesson_instructor_price INT,
 
-CREATE TABLE Group_lesson_number_of_places(
-	group_lesson_id_id INT FOREIGN KEY REFERENCES group_lesson(group_lesson_id) NOT NULL,
-	group_lesson_occurence_start_time TIMESTAMP NOT NULL,
-	group_lesson_occurence_end_time TIMESTAMP
-)
+	CONSTRAINT instructor_id_id FOREIGN KEY(instructor_id_id)
+        REFERENCES Instructor(instructor_id),
+	CONSTRAINT instrument_type_id_id FOREIGN KEY(instrument_type_id_id)
+        REFERENCES Instrument_type(instrument_type_id),
+	CONSTRAINT difficulty_level_id_id FOREIGN KEY(difficulty_level_id_id)
+        REFERENCES Difficulty_level(difficulty_level_id)
+);
 
-CREATE TABLE Group_lesson_enrollment(
-	group_lesson_id_id INT FOREIGN KEY REFERENCES group_lesson(group_lesson_id) NOT NULL,
-	student_id_id INT FOREIGN KEY REFERENCES Student(student_id) NOT NULL
-)
+CREATE TEMPORARY TABLE Group_lesson_enrollment(
+	group_lesson_id_id INT NOT NULL,
+	student_id_id INT NOT NULL,
+
+	CONSTRAINT group_lesson_id_id FOREIGN KEY(group_lesson_id_id)
+        REFERENCES Group_lesson(group_lesson_id),
+	CONSTRAINT student_id_id FOREIGN KEY(student_id_id)
+        REFERENCES Student(student_id)
+
+);
 
 /* ensembe */
 
-CREATE TABLE Ensemble_type(
-	ensemble_type_id INT PRIMARY KEY GENERATE ALWAYS AS IDENTITY NOT NUL,
+CREATE TEMPORARY TABLE Ensemble_type(
+	ensemble_type_id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY NOT NULL,
 	ensemble_type_name VARCHAR(50),
 	ensemble_description VARCHAR(500)
-)
+);
 
-CREATE TABLE Ensemble(
-	ensemble_id INT GENERATE ALWAYS AS IDENTITY PRIMARY KEY NOT NULL,
-	instructor_id_id INT FOREIGN KEY REFERENCES Instrctor(instructor_id),
-	instrument_type_id_id INT FOREIGN KEY REFERENCES Instrument_type(instrument_type_id),
-	ensemble_type_id_id INT FOREIGN KEY REFERENCES Ensemble_type(ensemble_type_id) NOT NULL,
-	ensemble_start_time TIMESTAMP,
+CREATE TEMPORARY TABLE Ensemble(
+	ensemble_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY NOT NULL,
+	instructor_id_id INT NOT NULL,
+	instrument_type_id_id INT,
+	ensemble_type_id_id INT NOT NULL,
+	ensemble_start_time TIMESTAMP NOT NULL,
 	ensemble_end_time TIMESTAMP,
 	ensemble_student_price INT,
-	ensemble_instructor_price INT
-)
+	ensemble_instructor_price INT,
 
-CREATE TABLE Group_lesson_enrollment(
-	ensemble_lesson_id_id INT FOREIGN KEY REFERENCES ensemble(ensemble_id) NOT NULL,
-	student_id_id INT FOREIGN KEY REFERENCES Student(student_id) NOT NULL
-)
+	CONSTRAINT instructor_id_id FOREIGN KEY(instructor_id_id)
+        REFERENCES Instructor(instructor_id),
+	CONSTRAINT instrument_type_id_id FOREIGN KEY(instrument_type_id_id)
+        REFERENCES Instrument_type(instrument_type_id),
+	CONSTRAINT ensemble_type_id_id FOREIGN KEY(ensemble_type_id_id)
+        REFERENCES Ensemble_type(ensemble_type_id)
+);
+
+CREATE TEMPORARY TABLE Group_lesson_enrollment(
+	ensemble_lesson_id_id INT NOT NULL,
+	student_id_id INT NOT NULL,
+
+	CONSTRAINT ensemble_lesson_id_id FOREIGN KEY(ensemble_lesson_id_id)
+        REFERENCES Ensemble(ensemble_id),
+	CONSTRAINT student_id_id FOREIGN KEY(student_id_id)
+        REFERENCES Student(student_id)
+);
 
 /* ----------------------- standard prices ------------------------ */
 
@@ -156,7 +204,7 @@ CREATE TABLE Group_lesson_enrollment(
     instructor_ensemble
 */
 
-CREATE TABLE Standard_price(
+CREATE TEMPORARY TABLE Standard_price(
 	standard_price INT,
 	standard_price_description VARCHAR(50)
-)
+);
