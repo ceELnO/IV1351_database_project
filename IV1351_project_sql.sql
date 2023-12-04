@@ -204,3 +204,21 @@ CREATE TEMPORARY TABLE Standard_price(
     instructor_group_advanced INT,
     instructor_ensemble INT
 );
+
+
+/* ------------------------ historical database ----------------- */
+
+/* tba:
+
+CREATE TYPE lesson_types AS ENUM ('group', 'individual', 'ensemble');
+CREATE TEMPORARY TABLE Historical_database (
+		lesson_type lesson_types NOT NULL,
+		genre VARCHAR(50),
+		instrument VARCHAR(50),
+		lesson_price INT,
+		student_fname VARCHAR(50),
+		student_lname VARCHAR (50),
+		student_mail_address VARCHAR(50)
+);
+
+*/
