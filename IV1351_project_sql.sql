@@ -1,3 +1,5 @@
+/* ------------------------------------------- create tables -------------------- */
+
 
 /* ---------------------- complex order ----------------------- */
 
@@ -31,7 +33,7 @@ CREATE TEMPORARY TABLE Instructor(
 /* --- details with people ---*/
 
 CREATE TEMPORARY TABLE Guardian_contact_details(
-	student_id_id INT NOT NULL,
+	student_id_id INT NOT NULL PRIMARY KEY,
 	guardian_fname VARCHAR(50),
 	guardian_lname VARCHAR(50),
 	guardian_mail_address VARCHAR(50),
@@ -44,7 +46,7 @@ CREATE TEMPORARY TABLE Guardian_contact_details(
 /* student_sibling_group identifies groups of siblings */
 
 CREATE TEMPORARY TABLE Student_sibling(
-	student_id_id INT NOT NULL UNIQUE,
+	student_id_id INT NOT NULL PRIMARY KEY,
 	student_sibling_group SERIAL,
 
 	CONSTRAINT student_sibling_grouping FOREIGN KEY(student_id_id)
@@ -75,7 +77,7 @@ CREATE TEMPORARY TABLE Instructor_instrument(
 );
 
 CREATE TEMPORARY TABLE Rent_instrument_assortment(
-	instrument_type_id_id INT UNIQUE NOT NULL,
+	instrument_type_id_id INT PRIMARY KEY NOT NULL,
 	instrument_type_stored_quantity INT,
 	instrument_type_rent_cost INT
 );
@@ -159,17 +161,15 @@ CREATE TEMPORARY TABLE Ensemble_type(
 CREATE TEMPORARY TABLE Ensemble(
 	ensemble_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY NOT NULL,
 	instructor_id_id INT NOT NULL,
-	instrument_type_id_id INT,
 	ensemble_type_id_id INT NOT NULL,
 	ensemble_start_time TIMESTAMP NOT NULL,
 	ensemble_end_time TIMESTAMP,
 	ensemble_student_price INT,
 	ensemble_instructor_price INT,
+	ensemble_max_students INT,
 
 	CONSTRAINT instructor_id_id FOREIGN KEY(instructor_id_id)
         REFERENCES Instructor(instructor_id),
-	CONSTRAINT instrument_type_id_id FOREIGN KEY(instrument_type_id_id)
-        REFERENCES Instrument_type(instrument_type_id),
 	CONSTRAINT ensemble_type_id_id FOREIGN KEY(ensemble_type_id_id)
         REFERENCES Ensemble_type(ensemble_type_id)
 );
